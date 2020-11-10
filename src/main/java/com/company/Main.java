@@ -18,40 +18,20 @@ public class Main {
 
     public static void main(String[] args) {
 
+        //region Client
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
                         new HttpHost("localhost", 9200, "http")));
 
-        IndexRequest request = new IndexRequest("students");
-        IndexResponse indexResponse;
+        //endregion
 
-        Student [] students = new Student[10];
-	    for (int i = 0 ; i<10 ; i++ )
-        {
-            students[i] = new Student();
-            students[i].setFirstName("fname " + i);
-            students[i].setLastName("lname " + i);
-            students[i].setId(i);
-        }
-        for (Student student : students)
-        {
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                String json = mapper.writeValueAsString(student);
-                System.out.println("ResultingJSONstring = " + json);
-                request.id(String.valueOf(student.getId()));
-                request.source(json, XContentType.JSON);
-                indexResponse = client.index(request, RequestOptions.DEFAULT);
-                System.out.println(indexResponse.getIndex() + " : " + indexResponse.getId());
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        //region Index Request and Response
+        IndexRequest request = new IndexRequest("users");
+        IndexResponse indexResponse;
+        //endregion
 
         GetRequest getRequest = new GetRequest(
-                "students",
+                "users",
                 "3");
         try {
             GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
